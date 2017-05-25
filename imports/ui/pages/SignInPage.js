@@ -26,10 +26,10 @@ class SignInPage extends React.Component {
 
     const getFormFieldValue = getFieldValue(event.target);
 
-    const email = getFormFieldValue('email');
+    const login = getFormFieldValue('login');
     const password = getFormFieldValue('password');
 
-    Meteor.loginWithPassword({ email }, password, handleResult());
+    Meteor.loginWithPassword(login, password, handleResult());
   }
 
   render() {
@@ -45,11 +45,11 @@ class SignInPage extends React.Component {
               className="md-grid"
               onSubmit={this.onSubmit}
             >
-              <TextField required id="email" type="email" label="Email" />
-
+              
+              <TextField required id="login" type="text" label="login or email" />
               <TextField required id="password" label="Password" type="password" />
-
               <Button raised primary type="submit" label="Submit" />
+
             </FocusContainer>
           </Col>
         </Row>
