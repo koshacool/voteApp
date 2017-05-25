@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-
 import { Polls } from './polls';
 
 
@@ -9,4 +8,12 @@ Meteor.publish('polls.currentUser', function pollsCurrentUser() {
   }
 
   return Polls.find({ createdBy: this.userId });
+});
+
+Meteor.publish('polls.public', function pollsPublic() {
+    if (!this.userId) {
+        return this.ready();
+    }
+
+    return Polls.find({ isPublic: true });
 });

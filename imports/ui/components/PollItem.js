@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
-import { Col } from 'react-flexbox-grid';
+import moment from 'moment';
+import {Col} from 'react-flexbox-grid';
 
 import Card from 'react-md/lib/Cards/Card';
 import CardTitle from 'react-md/lib/Cards/CardTitle';
@@ -18,46 +18,44 @@ const getHumanizeDuration = date => moment.duration(new Date() - date).humanize(
 const getTimeAgo = date => `${getHumanizeDuration(date)} ago`;
 
 
-const PollItem = ({ poll, onPublicityToggle }) => {
-  const onPublicityToggleHandler = isChecked => onPublicityToggle(isChecked, poll._id);
+const PollItem = ({poll, onPublicityToggle}) => {
+    const onPublicityToggleHandler = isChecked => onPublicityToggle(isChecked, poll._id);
+    const isOwner = poll.createdBy === Meteor.userId();
+    return (
+        <Col xs={12} className="m-b-20">
+            <Card>
+                <CardTitle
+                    title={poll.title}
+                    subtitle={getTimeAgo(poll.createdAt)}
+                />
 
-  return (
-    <Col xs={12} className="m-b-20">
-      <Card>
-        <CardTitle
-          title={poll.title}
-          subtitle={getTimeAgo(poll.createdAt)}
-        />
-
-        <CardActions>
-          <Button flat label="Open" />
-          <Button flat label="Edit" />
-
-          <Checkbox
-            id={getCheckboxId(poll)}
-            name={getCheckboxId(poll)}
-            label="public"
-            checked={poll.isPublic}
-            checkedIconChildren="check"
-            onChange={onPublicityToggleHandler}
-          />
-        </CardActions>
-      </Card>
-    </Col>
-  );
+                <CardActions>
+                    <Button flat label="Open"/>
+                    { isOwner ?  <Button flat label="Edit"/> : '' }
+                    { isOwner ?
+                            <Checkbox
+                                id={getCheckboxId(poll)}
+                                name={getCheckboxId(poll)}
+                                label="public"
+                                checked={poll.isPublic}
+                                checkedIconChildren="check"
+                                onChange={onPublicityToggleHandler}
+                            />
+                        : ''
+                    }
+                </CardActions>
+            </Card>
+        </Col>
+    );
 };
-
 
 PollItem.defaultProps = {
-  onPublicityToggle: () => true,
+    onPublicityToggle: () => true,
 };
-
 
 PollItem.propTypes = {
-  poll: PropTypes.object.isRequired,
-
-  onPublicityToggle: PropTypes.func,
+    poll: PropTypes.object.isRequired,
+    onPublicityToggle: PropTypes.func,
 };
-
 
 export default PollItem;
