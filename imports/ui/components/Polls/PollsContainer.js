@@ -1,8 +1,7 @@
+import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Meteor } from 'meteor/meteor';
-
+import browserHistory from 'react-router/lib/browserHistory';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import { Row } from 'react-flexbox-grid';
@@ -15,7 +14,7 @@ import PollItem from '../PollItem';
 import Spinner from '../Spinner';
 
 
-class MyPolls extends React.Component {
+class PollsContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -50,19 +49,25 @@ class MyPolls extends React.Component {
 }
 
 
-MyPolls.propTypes = {
+PollsContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   polls: PropTypes.array.isRequired,
-  onUnmount: PropTypes.func.isRequired,
+  onUnmount: PropTypes.func.isRequired, 
 };
 
 
 export default createContainer(() => {
-  const subsHandler = Meteor.subscribe('polls.currentUser');
+  const pathName = browserHistory.getCurrentLocation().pathname;//Get current url path
+  const pattern = /\/my-polls/g;//Patern for check url
+  const showCurrentUserPolls = pattern.test(pathName);
+
+  const subsHandler = showCurrentUserPolls ? 
+    Meteor.subscribe('polls.currentUser') 
+    :  Meteor.subscribe('polls.public');//Get collection to show
 
   return {
     loading: !subsHandler.ready(),
     polls: Polls.find().fetch(),
     onUnmount: subsHandler.stop,
   };
-}, MyPolls);
+}, PollsContainer);
